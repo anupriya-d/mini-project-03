@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 
+//Define fields for move schema
 const moveSchema = new mongoose.Schema({
     name: String,
     url:String,

@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 
+//define fields for pokemon schema
 const pokemonSchema = new mongoose.Schema({
     name: String,
     height: Number,

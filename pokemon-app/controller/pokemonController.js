@@ -59,7 +59,7 @@ const populateCollections = async () => {
             newPokemon.moves.push(existingMove);
         }
 
-        // Save the updated Pokemon document
+        // Save the updated Pokemon Collection
         await newPokemon.save();
     }
 };

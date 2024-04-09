@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 
+//Define fields for abilityschema
 const abilitySchema = new mongoose.Schema({
     name: String,
     url: String,
