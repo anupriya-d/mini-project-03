@@ -1,0 +1,95 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0.0",
+    "title": "My Pokemon Project",
+    "description": "My User Project Application API",
+    "license": {
+      "name": "MIT",
+      "url": "https://opensource.org/licenses/MIT"
+    }
+  },
+  "host": "localhost:3700",
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "Pokemon",
+      "description": "API for Pokemon Data"
+    }
+  ],
+  "schemes": ["http"],
+  "consumes": ["application/json"],
+  "produces": ["application/json"],
+  "paths": {
+    "/pokemon/": {
+      "get": {
+        "tags": ["Information Service"],
+        "summary": "Get information about a specific Pokemon",
+        "parameters": [
+          {
+            "name": "Pokemon",
+            "in": "path",
+            "description": "ID of the Pokemon",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            
+            "description": "This service allows you to get information of given Pokemon"
+          },
+          "404": {
+            "description": "Pokemon not found"
+          }
+        }
+      }
+    },
+    "/move/": {
+        "get": {
+          "tags": ["Information Service"],
+          "summary": "Get information about a specific Move of the Pokemon",
+          "parameters": [
+            {
+              "name": "Move",
+              "in": "path",
+              "description": "ID of the Move",
+              "type": "string"
+            }
+          ],
+          "responses": {
+            "200": {
+              
+              "description": "This service allows you to get information of given Move"
+            },
+            "404": {
+              "description": "Move not found"
+            }
+          }
+        }
+      },
+      "/ability/": {
+        "get": {
+          "tags": ["Information Service"],
+          "summary": "Get information about a specific Ability of the Pokemon",
+          "parameters": [
+            {
+              "name": "Ability",
+              "in": "path",
+              "description": "ID of the Ability",
+              "type": "string"
+            }
+          ],
+          "responses": {
+            "200": {
+              
+              "description": "This service allows you to get information of given Ability"
+            },
+            "404": {
+              "description": "Ability not found"
+            }
+          }
+        }
+      }
+  }
+  
+}

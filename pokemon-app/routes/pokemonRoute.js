@@ -16,47 +16,42 @@ pokemonRoute.get('/populate', async (req, res) => {
 });
 
 /**********************************************GET POKEMON ROUTES**********************************************************************/
-pokemonRoute.get('/pokemon/', (req, res) => {
+
+// to get all pokemons data
+pokemonRoute.get('/', (req, res) => {
     Controllers.pokemonController.getPokemons(res);
     })
-    
-
-pokemonRoute.get('/pokemon/:id', (req, res) => {
+// to get pokemon data by id  
+pokemonRoute.get('/:id', (req, res) => {
         Controllers.pokemonController.getPokemonById(req, res);
 });
 
-pokemonRoute.get('/pokemon&move/:id', (req, res) => {
+// to get pokemon data with move data 
+pokemonRoute.get('/move/:id', (req, res) => {
     Controllers.pokemonController.getPokemonWithMoves(req, res);
 });
 
-pokemonRoute.get('/pokemon/page/:pageNumber', async (req, res) => {
+// to get pokemon data by page(each page includes 3 pokemons)
+pokemonRoute.get('/page/:pageNumber', async (req, res) => {
     const pageNumber = parseInt(req.params.pageNumber);
-    const pageSize = 3; // Number of Pokémon per page
+    const pageSize = 3; 
 
     const result = await Controllers.pokemonController.getPokemonByPage(pageNumber, pageSize);
     res.status(result.result).send(result);
 });
 
-/**********************************************GET MOVE ROUTES**********************************************************************/
-pokemonRoute.get('/move/', (req, res) => {
-    Controllers.moveController.getMoves(res);
-    });
-
-pokemonRoute.get('/move/:id', (req, res) => {
-        Controllers.moveController.getMoveById(req, res);
-    });
-
-pokemonRoute.post('/pokemon/create', (req, res) => {
+// to create pokemon 
+pokemonRoute.post('/create', (req, res) => {
     Controllers.pokemonController.createPokemon(req.body, res);
     });
 
-// Adds a put route to update  a new user
-pokemonRoute.put('/pokemon/:id', (req, res) => {
+// to update a pokemon
+pokemonRoute.put('/:id', (req, res) => {
     Controllers.pokemonController.updatePokemon(req, res);
     });
 
-// Adds a put delete to delete  a new user
-pokemonRoute.delete('/pokemon/:id', (req, res) => {
+// to delete a pokemon
+pokemonRoute.delete('/:id', (req, res) => {
     Controllers.pokemonController.deletePokemon(req, res)
     });
 

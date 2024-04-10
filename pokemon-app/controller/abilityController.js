@@ -22,26 +22,30 @@ const populateAbilities = async (pokemon, abilities) => {
     }
 };
 
-const getAbilities = async (req, res) => {
-    try {
-        const ability = await Ability.find();
-        res.json(ability);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-  };
+/**********************************************CRUD Operations**********************************************************************/
+//1) GET All
 
-  const getAbilityById = async (req, res) => {
-    try {
-        const ability = await Ability.findById(req.params.id);
-        if (!ability) {
-            return res.status(404).json({ message: 'Pokemon not found' });
-        }
-        res.json(ability);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-  };
+let Models = require("../models"); // matches index.js
+const getAbilities = (res) => {
+    
+  Models.Ability.find({})
+    .then((data) => res.send({ result: 200, data: data }))
+    .catch((err) => {
+      console.log(err);
+      res.send({ result: 500, error: err.message });
+    });
+};
+
+//2) GET by id
+const getAbilityById = (req, res) => {
+ 
+    Models.Ability.findById(req.params.id)
+        .then((data) => res.send({ result: 200, data: data }))
+        .catch((err) => {
+            console.log(err);
+            res.send({ result: 500, error: err.message });
+        });
+};
 
 module.exports =
  { populateAbilities,

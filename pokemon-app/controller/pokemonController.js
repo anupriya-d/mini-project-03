@@ -72,14 +72,13 @@ const getPokemonWithMoves = (req, res) => {
 
 };
 
-//3) GET pokemon data by page
+//4) GET pokemon data by page
 const getPokemonByPage = async (pageNumber, pageSize) => {
     try {
         const skip = (pageNumber - 1) * pageSize;
         const pokemonData = await Models.Pokemon.find()
             .skip(skip)
             .limit(pageSize)
-            //.populate('move', 'name');
         return { result: 200, data: pokemonData };
     } catch (err) {
         console.error(err);
@@ -87,8 +86,8 @@ const getPokemonByPage = async (pageNumber, pageSize) => {
     }
 };
 
+//5) create  a new pokemon 
 const createPokemon = (data, res) => {
-    // creates a new user using JSON data POSTed in request body
     console.log(data);
     new Models.Pokemon(data)
       .save()
@@ -99,8 +98,9 @@ const createPokemon = (data, res) => {
       });
   };
 
-  const updatePokemon = (req, res) => {
-    // updates the user matching the ID from the param using JSON data POSTed in request body
+
+//6) update  a  pokemon by id 
+const updatePokemon = (req, res) => {
     console.log(req.body);
     Models.Pokemon.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
@@ -111,6 +111,8 @@ const createPokemon = (data, res) => {
         res.send({ result: 500, error: err.message });
       });
   };
+
+
   const deletePokemon = (req, res) => {
     // deletes the user matching the ID from the param
     Models.Pokemon.findByIdAndDelete(req.params.id)
@@ -121,6 +123,9 @@ const createPokemon = (data, res) => {
       });
   };
    
+
+
+
 module.exports = {   
     getPokemons,
     getPokemonById,

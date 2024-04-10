@@ -1,12 +1,8 @@
 
-const Ability = require('./ability');
-const Move = require('./move');
-
-
 module.exports = {
     
     Pokemon:require('./pokemon'),
-    Ability,
-    Move
+    Ability:require('./ability'),
+    Move:require('./move')
 };
 //export all models

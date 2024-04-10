@@ -29,7 +29,7 @@ const populateMoves = async (pokemon, moves) => {
     }
 };
 
-/**********************************************GET MOVE ROUTES**********************************************************************/
+/**********************************************CRUD Operations**********************************************************************/
 //1) GET All
 
 let Models = require("../models"); // matches index.js
@@ -55,4 +55,7 @@ const getMoveById = (req, res) => {
 };
 
 
-module.exports = { populateMoves ,getMoves,getMoveById};
+module.exports = {
+     populateMoves,
+     getMoves,
+     getMoveById};
