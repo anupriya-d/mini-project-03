@@ -1,91 +1,133 @@
-const axios = require('axios');
-const { Pokemon, Ability, Move } = require('../models');
+"use strict";
+const { populateAbilities} = require('../controller/abilityController');
+const {populateMoves} = require('../controller/moveController')
+const { Pokemon } = require('../models');
+const fetchData = require('../libraries/fetchData');
 
-const fetchData = async (url) => {
-    try {
-        const response = await axios.get(url);
-        return response.data;
-    } catch (error) {
-        console.error('Error fetching data:', error);
-        return null;
-    }
-};
-
-// Populate MongoDB collections
 const populateCollections = async () => {
-    // Fetch 100 Pokemon
-    const pokemonsData = await fetchData('https://pokeapi.co/api/v2/pokemon?limit=100');
+    try {
+        const pokemonsData = await fetchData('https://pokeapi.co/api/v2/pokemon?limit=100');
 
-    for (const pokemonData of pokemonsData.results) {
-        const pokemon = await fetchData(pokemonData.url);
+        for (const pokemonData of pokemonsData.results) {
+            const pokemon = await fetchData(pokemonData.url);
 
-        // Insert Pokemon data
-        const newPokemon = await Pokemon.create({
-            name: pokemon.name,
-            height: pokemon.height,
-            weight: pokemon.weight,
-            types: pokemon.types.map(type => type.type.name),
-            abilities: [],
-            moves: []
-        });
+            const newPokemon = await Pokemon.create({
+                name: pokemon.name,
+                height: pokemon.height,
+                weight: pokemon.weight,
+                types: pokemon.types.map(type => type.type.name),
+                abilities: [],
+                moves: []
+            });
 
-        // Insert abilities data
-        for (const ability of pokemon.abilities) {
-            let existingAbility = await Ability.findOne({ name: ability.ability.name });
-            if (!existingAbility) {
-                existingAbility = await Ability.create({
-                    name: ability.ability.name,
-                    url:ability.ability.url,
-                    pokemons: []
-                });
-            }
-            existingAbility.pokemons.push(newPokemon);
-            await existingAbility.save();
-            newPokemon.abilities.push(existingAbility);
+            await populateAbilities(newPokemon, pokemon.abilities);
+            await populateMoves(newPokemon, pokemon.moves);
+
+            await newPokemon.save();
         }
-
-        // Insert moves data
-        for (const move of pokemon.moves) {
-            let existingMove = await Move.findOne({ name: move.move.name });
-            if (!existingMove) {
-                existingMove = await Move.create({
-                    name: move.move.name,
-                    url:move.move.url,
-                    pokemons: []
-                });
-            }
-            existingMove.pokemons.push(newPokemon);
-            await existingMove.save();
-            newPokemon.moves.push(existingMove);
-        }
-
-        // Save the updated Pokemon Collection
-        await newPokemon.save();
+        console.log("Pokemon Collection Populated Successfully");
+    } catch (error) {
+        console.error('Error populating Pokemon collection:', error);
     }
 };
 
-populateCollections().then(() => {
-    console.log('Collections populated successfully');
-}).catch(error => {
-    console.error('Error populating collections:', error);
-});
 
 
-//CRUD Operations 
 
-const getPokemonById = async (req, res) => {
-  try {
-      const pokemon = await Pokemon.findById(req.params.id);
-      if (!pokemon) {
-          return res.status(404).json({ message: 'Pokemon not found' });
-      }
-      res.json(pokemon);
-  } catch (error) {
-      res.status(500).json({ message: error.message });
-  }
+/*------------------------------------CRUD Operations Pokemons-------------------------------------------------*/
+//1) GET All
+let Models = require("../models"); // matches index.js
+const getPokemons = (res) => {
+  // finds all users
+  Models.Pokemon.find({})
+    .then((data) => res.send({ result: 200, data: data }))
+    .catch((err) => {
+      console.log(err);
+      res.send({ result: 500, error: err.message });
+    });
 };
 
-module.exports = {
+//2) GET by id
+const getPokemonById = (req, res) => {
+ 
+    Models.Pokemon.findById(req.params.id)
+        .then((data) => res.send({ result: 200, data: data }))
+        .catch((err) => {
+            console.log(err);
+            res.send({ result: 500, error: err.message });
+        });
+};
+
+
+//3) GET pokemon data with moves data
+const getPokemonWithMoves = (req, res) => {
+ 
+    Models.Pokemon.findById(req.params.id)
+    .populate({ path: 'moves',select:'name url power accuracy contest_type damage_class generation'})
+    .then((data) => res.send({ result: 200, data: data }))
+    .catch((err) => {
+        console.log(err);
+        res.status(500).send({ result: 500, error: err.message });
+    });
+
+};
+
+//3) GET pokemon data by page
+const getPokemonByPage = async (pageNumber, pageSize) => {
+    try {
+        const skip = (pageNumber - 1) * pageSize;
+        const pokemonData = await Models.Pokemon.find()
+            .skip(skip)
+            .limit(pageSize)
+            //.populate('move', 'name');
+        return { result: 200, data: pokemonData };
+    } catch (err) {
+        console.error(err);
+        return { result: 500, error: 'Internal server error' };
+    }
+};
+
+const createPokemon = (data, res) => {
+    // creates a new user using JSON data POSTed in request body
+    console.log(data);
+    new Models.Pokemon(data)
+      .save()
+      .then((data) => res.send({ result: 200, data: data }))
+      .catch((err) => {
+        console.log(err);
+        res.send({ result: 500, error: err.message });
+      });
+  };
+
+  const updatePokemon = (req, res) => {
+    // updates the user matching the ID from the param using JSON data POSTed in request body
+    console.log(req.body);
+    Models.Pokemon.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    })
+      .then((data) => res.send({ result: 200, data: data }))
+      .catch((err) => {
+        console.log(err);
+        res.send({ result: 500, error: err.message });
+      });
+  };
+  const deletePokemon = (req, res) => {
+    // deletes the user matching the ID from the param
+    Models.Pokemon.findByIdAndDelete(req.params.id)
+      .then((data) => res.send({ result: 200, data: data }))
+      .catch((err) => {
+        console.log(err);
+        res.send({ result: 500, error: err.message });
+      });
+  };
+   
+module.exports = {   
+    getPokemons,
+    getPokemonById,
+    getPokemonWithMoves,
     populateCollections,
-    getPokemonById
+    getPokemonByPage,
+    createPokemon,
+    updatePokemon,
+    deletePokemon 
 };

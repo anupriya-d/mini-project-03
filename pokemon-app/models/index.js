@@ -1,10 +1,11 @@
-const Pokemon = require('./pokemon');
+
 const Ability = require('./ability');
 const Move = require('./move');
 
 
 module.exports = {
-    Pokemon,
+    
+    Pokemon:require('./pokemon'),
     Ability,
     Move
 };

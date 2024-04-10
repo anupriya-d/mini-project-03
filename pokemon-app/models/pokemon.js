@@ -8,6 +8,7 @@ const pokemonSchema = new mongoose.Schema({
     types: [String],
     abilities: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Ability' }],
     moves: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Move' }]
-});
+},{ strictPopulate: false });
+
 
 module.exports = mongoose.model('Pokemon', pokemonSchema);

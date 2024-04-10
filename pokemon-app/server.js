@@ -1,7 +1,5 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const routes = require('./routes/pokemonRoute.js');
-const pokemon = require('./models/pokemon.js');
 
 
 

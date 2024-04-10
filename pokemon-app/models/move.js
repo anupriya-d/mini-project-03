@@ -4,6 +4,11 @@ const mongoose = require('mongoose');
 const moveSchema = new mongoose.Schema({
     name: String,
     url:String,
+    power:Number,
+    accuracy:Number,
+    contest_type:String,
+    damage_class:String,
+    generation:String,
     pokemons: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Pokemon' }]
 });
 
