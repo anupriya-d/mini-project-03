@@ -3,10 +3,11 @@ const fetchData = require('../libraries/fetchData');
 
 const populateAbilities = async (pokemon, abilities) => {
     for (const ability of abilities) {
+        //iterate through abilitiess and try to find if exiting available 
         let existingAbility = await Ability.findOne({ name: ability.ability.name });
         if (!existingAbility) {
             const abilityData = await fetchData(ability.ability.url);
-
+            //proceed to create new if not exiting one found and exatract additional data using url provided
             existingAbility = await Ability.create({
                 name: ability.ability.name,
                 url: ability.ability.url,
@@ -14,7 +15,7 @@ const populateAbilities = async (pokemon, abilities) => {
                 effect: abilityData.effect_entries[1].effect,
                 short_effect: abilityData.effect_entries[1].short_effect,
                 pokemons: []
-            });
+            });//create new Ability above
         }
         existingAbility.pokemons.push(pokemon);
         await existingAbility.save();
@@ -27,7 +28,7 @@ const populateAbilities = async (pokemon, abilities) => {
 
 let Models = require("../models"); // matches index.js
 const getAbilities = (res) => {
-    
+
   Models.Ability.find({})
     .then((data) => res.send({ result: 200, data: data }))
     .catch((err) => {

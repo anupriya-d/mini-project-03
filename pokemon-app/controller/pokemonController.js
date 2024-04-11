@@ -3,27 +3,27 @@ const { populateAbilities} = require('../controller/abilityController');
 const {populateMoves} = require('../controller/moveController')
 const { Pokemon } = require('../models');
 const fetchData = require('../libraries/fetchData');
-
+        // Define an asynchronous function named populateCollections responsible for populating a collection of Pokemon data.
 const populateCollections = async () => {
     try {
         const pokemonsData = await fetchData('https://pokeapi.co/api/v2/pokemon?limit=100');
-
-        for (const pokemonData of pokemonsData.results) {
+        // Fetch Pokémon data from the provided API endpoint.
+        for (const pokemonData of pokemonsData.results) {  // Iterate over each Pokemon to extract data
             const pokemon = await fetchData(pokemonData.url);
-
+            // Fetch aditional  data for each Pokemon using its specific url
             const newPokemon = await Pokemon.create({
                 name: pokemon.name,
                 height: pokemon.height,
                 weight: pokemon.weight,
-                types: pokemon.types.map(type => type.type.name),
+                types: pokemon.types.map(type => type.type.name),// Extract and assign types.
                 abilities: [],
                 moves: []
             });
-
+            // Populate Pokemon abilities and moves  
             await populateAbilities(newPokemon, pokemon.abilities);
             await populateMoves(newPokemon, pokemon.moves);
 
-            await newPokemon.save();
+            await newPokemon.save(); //save created new pokemon object in database 
         }
         console.log("Pokemon Collection Populated Successfully");
     } catch (error) {
@@ -75,7 +75,7 @@ const getPokemonWithMoves = (req, res) => {
 //4) GET pokemon data by page
 const getPokemonByPage = async (pageNumber, pageSize) => {
     try {
-        const skip = (pageNumber - 1) * pageSize;
+        const skip = (pageNumber - 1) * pageSize; //find how many docs to skip from position
         const pokemonData = await Models.Pokemon.find()
             .skip(skip)
             .limit(pageSize)

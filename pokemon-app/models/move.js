@@ -10,6 +10,6 @@ const moveSchema = new mongoose.Schema({
     damage_class:String,
     generation:String,
     pokemons: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Pokemon' }]
-});
+},{ strictPopulate: false });
 
 module.exports = mongoose.model('Move', moveSchema);
